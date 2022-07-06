@@ -1,0 +1,172 @@
+﻿@using MethodRaid.Domain.Models
+@model IEnumerable<Book>
+
+
+@{
+    ViewBag.Title = "Books";
+}
+
+
+@Html.ActionLink("Регистрация новых книг", "NewBook", "Book")
+
+<div class="card-header mt-2" style="font-weight:600">Список книг</div>
+
+
+<div class="mt-2">
+    <span>Фильтр списка книг</span>
+    <select id="selBook">
+        <option value="All">ВСЕ</option>
+        <option value="Read">На руках</option>
+        <option value="Free" selected="selected">Свободные</option>
+    </select>
+</div>
+
+
+<div class="my-2 lstClient">
+</div>
+
+
+<div id="divErr" class="text-danger"></div>
+
+
+<div id="divListBooks">
+    @Html.Partial("_PartialFiltrBooks", "Free")
+</div>
+
+
+@section jsProject {
+
+    <script>
+        $(document).ready(function () {
+
+            var loadClient = false
+            var lstClient = $('.lstClient').hide();
+            var divErr = $('#divErr')
+
+
+            $('#selBook').change(function () {
+                var optionSelected = $(this).find("option:selected");
+                var valSelected = optionSelected.val();
+
+                var url = '/filtrbooks/' + valSelected
+
+                $.ajax(url, {
+                    contentType: "html",
+                    success: (data) => {
+                            $('#divListBooks').empty().append(data)
+
+                            LoadListClient(valSelected)
+
+                        }
+                    }
+
+                )
+
+            });
+
+
+            function LoadListClient(valSelected) {
+
+                if (valSelected == 'Free' && loadClient == false) {
+                    $.ajax('/client/Get_ListClient', {
+                        type: "GET",
+                        contentType: 'html',
+                        success: (data) => {
+                            lstClient.empty().append(data);
+                            lstClient.show();
+                        }
+                    })
+
+                    loadClient = true
+                    lstClient.show();
+                }
+                else
+                    if (valSelected == 'Free' && loadClient == true)
+                        lstClient.show()
+                    else
+                        lstClient.hide()
+
+            }
+
+            function ReturnBook() {
+
+                var item = $(this)
+
+                var strId = item.attr('data-id')
+
+                var ar = strId.split('-');
+
+                var data = {
+                    ClientId: ar[0],
+                    BookId: ar[1]
+                }
+
+                $.ajax('/api/web', {
+                    data: data,
+                    method:'DELETE',
+                    dataType: 'json',
+                    success: (data) => {
+                        if (data.result == 'ok')
+                            item.parent().parent().remove();
+                        else
+                            $('#divErr').text(data.message);
+                        
+                    }
+                })
+
+            }
+
+            function TakeBook() {
+
+                var item = $(this)
+                var strId = item.attr('data-id')
+                var clientId = SelectedClient()
+
+                if (clientId == 0) {
+                    divErr.empty().text('Не выбран читатель')
+                    return; 
+                }
+                else
+                    divErr.empty()
+
+
+                var data = {
+                    ClientId: clientId,
+                    BookId: strId
+                }
+
+                $.ajax('/api/web', {
+                    data: data,
+                    method: 'POST',
+                    dataType: 'json',
+                    success: (data) => {
+                        if (data.result == 'ok')
+                            item.parent().parent().remove();
+                        else
+                            $('#divErr').text(data.message);
+
+                    }
+                })
+
+            }
+
+            function SelectedClient() {
+                var optionSelected = $('.selClient').find("option:selected");
+                var valSelected = optionSelected.val();
+
+                return valSelected
+            }
+
+
+
+            $('#divListBooks').on('click', '.btnParthReturn', ReturnBook)
+
+            $('#divListBooks').on('click', '.btnParthGet', TakeBook)
+
+            $('.lstClient').on('change', '.selClient', SelectedClient)
+
+        });
+
+    </script>
+}
+

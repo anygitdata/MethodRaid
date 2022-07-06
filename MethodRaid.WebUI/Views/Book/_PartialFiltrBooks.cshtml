@@ -1,0 +1,33 @@
+﻿@using MethodRaid.Domain.Models
+@using MethodRaid.Domain.ApiDB
+@model string
+
+@{ 
+    var lsBook = DB_Books.Get_ListBookWithClient(Model);
+
+    }
+
+
+    @foreach (var item in lsBook)
+    {
+    <div class="mt-2" data-clientid="@item.ClientId" data-bookid="@item.BookId" >
+        <span class="mr-1"> 
+            @if (Model == "Read")
+            {
+                <button class="btnParthReturn border-0" 
+                        data-id="@item.ClientId-@item.BookId"><img src="~/Content/img/return.png" /></button>
+            }
+            else if( Model == "Free" )
+            {
+                <button class="btnParthGet border-0" data-id="@item.BookId"><img src="~/Content/img/getbook.png" /></button>    
+            }
+            
+
+            </span> <b>@item.Title</b>  <span class="ml-2">@item.ClientName</span>   <br />
+        <a href="/book/UpDiscr/@item.BookId"> <img src="~/Content/img/penc.png" /></a>
+
+        <span class="ml-1">@item.Description </span>
+
+    </div>
+
+}

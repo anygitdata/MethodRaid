@@ -1,0 +1,13 @@
+﻿@using MethodRaid.Domain.Models
+@model List<Client>
+
+@using MethodRaid.Domain.ApiDB 
+
+<span>Список читателей</span>
+<select class="selClient">
+    <option value="0" selected="selected">Клиенты</option>
+    @foreach(var item in Model) { 
+        <option value="@item.ClientId">@item.ClientName</option>
+    }
+</select>
+

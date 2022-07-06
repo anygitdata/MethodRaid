@@ -1,0 +1,31 @@
+﻿@using MethodRaid.Domain.Models
+@model Client
+
+@{
+    ViewBag.Title = ViewBag.PageTitle;
+}
+
+<h2>@ViewBag.message</h2>
+
+<div class="">
+    <a href="~/client">Перейти к списку пользователей</a>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+
+    @Html.HiddenFor(p=> p.ClientId)
+
+    <div class="dataElem">
+
+        <div>
+            @Html.LabelFor(p=> p.ClientName)
+        </div>
+        <div>
+            @Html.EditorFor(p=> p.ClientName)
+        </div>
+    </div>
+
+    <input class="btn btn-primary mt-4" type="submit" value="Сохранить" />
+}

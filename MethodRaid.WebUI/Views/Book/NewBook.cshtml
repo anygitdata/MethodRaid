@@ -1,0 +1,81 @@
+﻿@using MethodRaid.Domain.Models
+
+@model Book
+
+
+@{
+    ViewBag.Title = "NewBook";
+}
+
+
+<h2>Создание новой книги</h2>
+
+
+<form class="mt-3" asp-action="NewBook" asp-controller="Book" method="post">
+
+    <div id="divMes" class="text-danger"></div>
+
+    <div class="form-group">
+        <label>Название</label> <br />
+        <input type="text" id="Title" name="Title" value="" placeholder="Название книги" />
+    </div>
+    <div class="form-group mt-3">
+        <label>Описание</label> <br />
+        <textarea id="Description" name="Description" cols="50" rows="3" placeholder="Описание книги"></textarea>
+    </div>
+
+</form>
+
+<button class="btn btn-primary btn-sm px-5 mt-3"
+        id="btn-save">
+    Save
+</button>
+
+@section jsProject{
+    <script>
+
+        $(document).ready(function () {
+
+            $('#btn-save').click(e => {
+
+                divMes = $('#divMes');
+                divMes.empty()
+
+                title = $('#Title').val()
+                descr = $('#Description').val()
+
+                if (title == '' || descr == '') {
+                    divMes.text('Заполните поля формы')
+                    return
+                }
+
+                path = '/book/NewBook'
+                data = {
+                    Title: title,
+                    Description: descr
+                }
+
+                $.ajax(path, {
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+
+                    success: (data) => {
+
+                        if (data.result == 'ok')
+                            window.location.replace('/book');
+                        else {
+                            divMes.text(data.message)
+                        }
+
+                    }
+                });
+
+
+            });
+
+        });
+
+    </script>
+
+}

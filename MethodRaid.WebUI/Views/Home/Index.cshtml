@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Библиотека книг";
+}
+
+
+<div class="container">
+
+    <h2 class="mt-3 ml-2"><img src="~/Content/img/librbook.png" /> Библиотека книг</h2>
+
+
+    <div class="mt-4 ml-3">
+        <ls>
+            <li>Общее кол-во книг в библиотеке: @ViewBag.CountBooks</li>
+            <li>В свободном доступе: @ViewBag.countBookFree</li>
+            <li>На руках у читателей: @ViewBag.countBookReading</li>
+            <li>Всего читателей @ViewBag.CountClients</li>
+        </ls>
+
+    </div>
+
+</div>
+
+
+
+
+
